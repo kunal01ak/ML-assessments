@@ -1,0 +1,39 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# K-Nearest Neighbors algorithm implementation
+class KNN:
+    def _init_(self, k=3):
+        self.k = k
+    
+    def fit(self, X, y):
+        self.X_train = X
+        self.y_train = y
+    
+    def euclidean_distance(self, x1, x2):
+        return np.sqrt(np.sum((x1 - x2) ** 2))
+    
+    def predict(self, X):
+        n_samples, _ = X.shape
+        predictions = []
+        
+        for i in range(n_samples):
+            distances = []
+            for j in range(len(self.X_train)):
+                distance = self.euclidean_distance(X[i], self.X_train[j])
+                distances.append((distance, self.y_train[j]))
+            
+            distances = sorted(distances)[:self.k]
+            neighbors = [neighbor[1] for neighbor in distances]
+            predicted_class = max(set(neighbors), key=neighbors.count)
+            predictions.append(predicted_class)
+        
+        return predictions
+
+
+# Assuming X_train and y_train are the feature and target arrays for training
+
+knn = KNN(k=5)
+knn.fit(X_train, y_train)
+knn_predictions = knn.predict(X_test)
